@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+	<_name>Split Elements by Color</_name>
+
+	<id>com.sillyfrog.inkscape.colorsplit</id>
+
+	<label>Using the stroke colour (if set), falling back to the fill color, will
+		separate out elements, grouped by color into a separate file.
+	</label>
+	<label>The file name will have the colour name as the extension, ie: originalname_[color].svg.</label>
+	<label>Optionally a mapping from the color to a specificed string can be set below
+		to control the output file name.</label>
+	<separator />
+	<spacer />
+	<param name="color_name_mapping" type="string" appearance="multiline"
+		gui-text="Color to Name Mapping"
+		gui-description="Each hex color code can be mapped to a descriptive name, eg: '#0000ff text' will name the file with a '-text' extension."></param>
+
+	<!-- <effect needs-live-preview="false"> -->
+	<effect>
+		<object-type>all</object-type>
+		<effects-menu>
+			<submenu _name="CNC Tools" />
+		</effects-menu>
+	</effect>
+
+	<script>
+		<command location="inx" interpreter="python">colorsplit.py</command>
+	</script>
+</inkscape-extension>
