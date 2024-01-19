@@ -7,7 +7,7 @@ import logging
 import inkex
 
 # Uncomment the following to setup logging to /tmp/log.txt
-# logging.basicConfig(filename="/tmp/log.txt", level=logging.DEBUG)
+logging.basicConfig(filename="/tmp/log.txt", level=logging.DEBUG)
 
 
 ELEMENTS_XPATH = (
@@ -29,6 +29,12 @@ class SplitPathByColor(inkex.Effect):
             "--color_name_mapping",
             default="",
             help="String of color to name mappings",
+        )
+        parser.add_argument(
+            "--remove_text_elements",
+            type=inkex.Boolean,
+            default=False,
+            help="If True, remove all text elements from the output documents",
         )
         parser.add_argument(
             "--testnumber",
@@ -86,7 +92,12 @@ class SplitPathByColor(inkex.Effect):
             logging.info("Color %s", color_name)
             svg = self.svg.copy()
             # Delete _all_ the unwanted paths
-            svg_elements = svg.xpath(ELEMENTS_XPATH, namespaces=inkex.NSS)
+            if self.options.remove_text_elements:
+                search_path = ELEMENTS_XPATH + " | //svg:text "
+            else:
+                search_path = ELEMENTS_XPATH
+            svg_elements = svg.xpath(search_path, namespaces=inkex.NSS)
+            logging.debug("Found %d elements", len(svg_elements))
             for element in svg_elements:
                 path_id = element.attrib["id"]
                 if path_id not in path_ids:

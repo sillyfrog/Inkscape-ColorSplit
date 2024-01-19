@@ -16,6 +16,10 @@
 		gui-text="Color to Name Mapping"
 		gui-description="Each hex color code can be mapped to a descriptive name, eg: '#0000ff text' will name the file with a '-text' extension."></param>
 
+	<param name="remove_text_elements" gui-text="Remove text elements"
+		gui-description="Remove all text elements from the output files."
+		type="bool">false</param>
+
 	<!-- <effect needs-live-preview="false"> -->
 	<effect>
 		<object-type>all</object-type>
