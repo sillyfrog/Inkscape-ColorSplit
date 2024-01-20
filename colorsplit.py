@@ -7,7 +7,7 @@ import logging
 import inkex
 
 # Uncomment the following to setup logging to /tmp/log.txt
-logging.basicConfig(filename="/tmp/log.txt", level=logging.DEBUG)
+# logging.basicConfig(filename="/tmp/log.txt", level=logging.DEBUG)
 
 
 ELEMENTS_XPATH = (
@@ -35,6 +35,12 @@ class SplitPathByColor(inkex.Effect):
             type=inkex.Boolean,
             default=False,
             help="If True, remove all text elements from the output documents",
+        )
+        parser.add_argument(
+            "--remove_hidden_elements",
+            type=inkex.Boolean,
+            default=True,
+            help="If True, remove and ignore all hidden (display: none) elements",
         )
         parser.add_argument(
             "--testnumber",
@@ -65,10 +71,15 @@ class SplitPathByColor(inkex.Effect):
         elements = self.svg.xpath(ELEMENTS_XPATH, namespaces=inkex.NSS)
         path_colors = {}
         for element in elements:
+            style = element.specified_style()
+            if self.options.remove_hidden_elements:
+                if style.get("display", "").lower() == "none":
+                    logging.debug("Skipping hidden element %s", element.attrib["id"])
+                    continue
+
             # Get the stroke-color attribute if set
             color = element.get("stroke")
             if color is None:
-                style = element.specified_style()
                 color = style.get("stroke")
                 if color is None:
                     color = element.get("fill")
@@ -85,6 +96,9 @@ class SplitPathByColor(inkex.Effect):
             color_name = self.color_name_mapping.get(color, color)
             if color_name not in path_colors:
                 path_colors[color_name] = []
+                logging.debug(
+                    "New color %s with element ID: %s", color_name, element.attrib["id"]
+                )
             path_colors[color_name].append(element.attrib["id"])
 
         # For each color, make a copy of the document, and remove all the colors that are not the current color

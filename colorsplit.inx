@@ -20,6 +20,10 @@
 		gui-description="Remove all text elements from the output files."
 		type="bool">false</param>
 
+	<param name="remove_hidden_elements" gui-text="Remove hidden elements"
+		gui-description="Remove all hidden (style=display: none) elements from the output files."
+		type="bool">true</param>
+
 	<!-- <effect needs-live-preview="false"> -->
 	<effect>
 		<object-type>all</object-type>
